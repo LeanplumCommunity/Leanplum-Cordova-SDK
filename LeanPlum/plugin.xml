@@ -1,0 +1,44 @@
+<?xml version='1.0' encoding='utf-8'?>
+<plugin id="com.telerik.leanplum" version="1.0.0" xmlns="http://apache.org/cordova/ns/plugins/1.0" xmlns:android="http://schemas.android.com/apk/res/android">
+	<name>LeanPlum</name>
+	<js-module name="LeanPlum" src="www/LeanPlum.js">
+		<clobbers target="LeanPlum" />
+	</js-module>
+
+	<preference name="APP_ID" />
+	<preference name="DEVELOPMENT_KEY" />
+	<preference name="PRODUCTION_KEY" />
+
+
+	<platform name="ios">
+		<config-file parent="/*" target="config.xml">
+			<feature name="LeanPlum">
+				<param name="ios-package" value="CDVLeanPlum" />
+			</feature>
+		</config-file>
+
+		<framework src="Security.framework"/>
+    	<framework src="CFNetwork.framework"/>
+    	<framework src="SystemConfiguration.framework"/>
+    	<framework src="AdSupport.framework"/>
+
+		<source-file framework="true" src="lib/ios/LeanPlum.framework/libLeanPlum.a"/>
+		<header-file src="lib/ios/LeanPlum.framework/Headers/LeanPlum.h"/>
+	
+		<source-file src="src/ios/CDVLeanPlum.m" />
+
+		<config-file target="*-Info.plist" parent="APP_ID">
+            <string>$APP_ID</string>
+        </config-file>
+
+        <config-file target="*-Info.plist" parent="DEVELOPMENT_KEY">
+            <string>$DEVELOPMENT_KEY</string>
+        </config-file>
+
+        <config-file target="*-Info.plist" parent="PRODUCTION_KEY">
+            <string>$PRODUCTION_KEY</string>
+        </config-file>
+
+	</platform>
+
+</plugin>
