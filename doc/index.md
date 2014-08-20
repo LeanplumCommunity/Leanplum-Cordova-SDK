@@ -3,7 +3,7 @@
 Leanplum enables mobile teams to quickly go from insight to action using the lean cycle of releasing, analyzing and optimizing content and messaging. Start using our fully integrated solution in minutes!
 The plugin defines a global `LeanPlum` object, which defines various operations to perform A/B tests for an application.
 
-Although the object is in the global scope, it is not available until after the `deviceready` event.
+Although the object is in the global scope, it is not available until after the _deviceready_ event.
 
     document.addEventListener("deviceready", onDeviceReady, false);
     function onDeviceReady() {
@@ -17,6 +17,7 @@ You can create variables that can take on new values from the server. This allow
 Variable data comes back asynchronously when the app starts. If you need to use a variable when the app starts
 
 Define variables outside of your methods, like you would a constant. Use underscores to group variables on the dashboard.
+
 
   Leanplum.start(function(){
       Leanplum.define("age", 26);
@@ -39,6 +40,7 @@ Example: Show me the distribution of purchase prices.
 Example: Show me the distribution of points scored.
 * Create custom metrics for numeric parameter values, like totals and averages.
 Example: For a purchase event, track and average revenue and the amount of currency bought per user.
+
 
   Leanplum.track("Kills");
   Leanplum.track("Likes", { "postId": post.Id });
@@ -64,20 +66,21 @@ Push Notifications sent using the Triggered delivery mode requires no additional
 Once you have your .p12 files, upload them to Leanplum.
 6. Configure your app to use push notifications.
 
-  Leanplum.registerPush(successHandler, errorHandler, {
+    Leanplum.registerPush(successHandler, errorHandler, {
         "badge" : "true",
         "alert" : "true",
         "sound" : "true",
         "callback" : "onNotificationReceived"
-  });
+    });
 
-  // handle notifications
-  function onNotification(e) {
+    // handle notifications
+    function onNotification(e) {
       // iOS
       if (e.alert){
 
       }
-  }
+    }
+
 
 ## Supported Platforms
 
