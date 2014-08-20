@@ -1,18 +1,17 @@
 <?xml version='1.0' encoding='utf-8'?>
 <plugin id="com.telerik.leanplum" version="1.0.0" xmlns="http://apache.org/cordova/ns/plugins/1.0" xmlns:android="http://schemas.android.com/apk/res/android">
-	<name>LeanPlum</name>
-	<js-module name="LeanPlum" src="www/LeanPlum.js">
-		<clobbers target="LeanPlum" />
+	<name>Leanplum</name>
+	<js-module name="Leanplum" src="www/Leanplum.js">
+		<clobbers target="Leanplum" />
 	</js-module>
 
 	<preference name="APP_ID" />
 	<preference name="DEVELOPMENT_KEY" />
 	<preference name="PRODUCTION_KEY" />
 
-
 	<platform name="ios">
 		<config-file parent="/*" target="config.xml">
-			<feature name="LeanPlum">
+			<feature name="Leanplum">
 				<param name="ios-package" value="CDVLeanPlum" />
 			</feature>
 		</config-file>
@@ -24,8 +23,12 @@
 
 		<source-file framework="true" src="lib/ios/LeanPlum.framework/libLeanPlum.a"/>
 		<header-file src="lib/ios/LeanPlum.framework/Headers/LeanPlum.h"/>
-	
+
+		<header-file src="src/ios/CDVLeanPlum.h" />
 		<source-file src="src/ios/CDVLeanPlum.m" />
+
+		<header-file src="src/ios/AppDelegate+notification.h" />
+		<source-file src="src/ios/AppDelegate+notification.m" />
 
 		<config-file target="*-Info.plist" parent="APP_ID">
             <string>$APP_ID</string>
