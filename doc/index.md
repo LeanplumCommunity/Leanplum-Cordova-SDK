@@ -18,9 +18,9 @@ Variable data comes back asynchronously when the app starts. If you need to use 
 
 Define variables outside of your methods, like you would a constant. Use underscores to group variables on the dashboard.
 
-	Leanplum.start(function(){
-      Leanplum.define("age", 26);
-  });
+    Leanplum.start(function(){
+        Leanplum.define("age", 26);
+    });
 
 
 ## Events and States: Tracking User Behavior
@@ -39,7 +39,7 @@ Example: Show me the distribution of purchase prices.
 Example: Show me the distribution of points scored.
 * Create custom metrics for numeric parameter values, like totals and averages. Example: For a purchase event, track and average revenue and the amount of currency bought per user.
 
-  	Leanplum.track("Kills");
+    Leanplum.track("Kills");
   	Leanplum.track("Likes", { "postId": post.Id });
 
 
@@ -64,20 +64,20 @@ Once you have your .p12 files, upload them to Leanplum.
 6. Configure your app to use push notifications.
 
 
-      Leanplum.registerPush(successHandler, errorHandler, {
-          "badge" : "true",
-          "alert" : "true",
-          "sound" : "true",
-          "callback" : "onNotificationReceived"
-      });
+        Leanplum.registerPush(successHandler, errorHandler, {
+            "badge" : "true",
+            "alert" : "true",
+            "sound" : "true",
+            "callback" : "onNotificationReceived"
+        });
 
-      // handle notifications
-      function onNotification(e) {
-        // iOS
-        if (e.alert){
+        // handle notifications
+        function onNotification(e) {
+          // iOS
+          if (e.alert){
 
+          }
         }
-      }
 
 
 ## Supported Platforms
