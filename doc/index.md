@@ -18,8 +18,7 @@ Variable data comes back asynchronously when the app starts. If you need to use 
 
 Define variables outside of your methods, like you would a constant. Use underscores to group variables on the dashboard.
 
-
-  Leanplum.start(function(){
+	Leanplum.start(function(){
       Leanplum.define("age", 26);
   });
 
@@ -38,12 +37,10 @@ Example: Show me my top purchased items.
 * Group metrics by ranges of event parameter values (creates a histogram + table).
 Example: Show me the distribution of purchase prices.
 Example: Show me the distribution of points scored.
-* Create custom metrics for numeric parameter values, like totals and averages.
-Example: For a purchase event, track and average revenue and the amount of currency bought per user.
+* Create custom metrics for numeric parameter values, like totals and averages. Example: For a purchase event, track and average revenue and the amount of currency bought per user.
 
-
-  Leanplum.track("Kills");
-  Leanplum.track("Likes", { "postId": post.Id });
+  	Leanplum.track("Kills");
+  	Leanplum.track("Likes", { "postId": post.Id });
 
 
 ## In-App Messaging & Push Notifications
@@ -66,20 +63,21 @@ Push Notifications sent using the Triggered delivery mode requires no additional
 Once you have your .p12 files, upload them to Leanplum.
 6. Configure your app to use push notifications.
 
-    Leanplum.registerPush(successHandler, errorHandler, {
-        "badge" : "true",
-        "alert" : "true",
-        "sound" : "true",
-        "callback" : "onNotificationReceived"
-    });
 
-    // handle notifications
-    function onNotification(e) {
-      // iOS
-      if (e.alert){
+      Leanplum.registerPush(successHandler, errorHandler, {
+          "badge" : "true",
+          "alert" : "true",
+          "sound" : "true",
+          "callback" : "onNotificationReceived"
+      });
 
+      // handle notifications
+      function onNotification(e) {
+        // iOS
+        if (e.alert){
+
+        }
       }
-    }
 
 
 ## Supported Platforms
