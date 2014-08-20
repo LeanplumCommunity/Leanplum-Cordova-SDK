@@ -39,8 +39,8 @@ Example: Show me the distribution of purchase prices.
 Example: Show me the distribution of points scored.
 * Create custom metrics for numeric parameter values, like totals and averages. Example: For a purchase event, track and average revenue and the amount of currency bought per user.
 
-    Leanplum.track("Kills");
-  	Leanplum.track("Likes", { "postId": post.Id });
+      Leanplum.track("Kills");
+      Leanplum.track("Likes", { "postId": post.Id });
 
 
 ## In-App Messaging & Push Notifications
