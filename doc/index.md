@@ -10,18 +10,22 @@ Although the object is in the global scope, it is not available until after the 
         console.log(device.cordova);
     }
 
-## Data Modeling
 
-You can create variables that can take on new values from the server. This allows you to roll out changes without having to push an update through the App Store. You can also create A/B tests to change variables for only a percentage of your users.
 
-Variable data comes back asynchronously when the app starts. If you need to use a variable when the app starts
+## Getting Started
 
-Define variables outside of your methods, like you would a constant. Use underscores to group variables on the dashboard.
+You need to obtain the app ID, development and production keys to add the plugin in your app. Once done, use the following line to enable debugging in the following way:
+
+    LeanPlum.enableDebugging();
+
+
+Next, start LeanPlum in the following way:
 
     Leanplum.start(function(){
-        Leanplum.define("age", 26);
-    });
+        // Do Your Thing.
+    }
 
+Based on debugging enabled. It will use either the production or development key for a given app ID.
 
 ## Events and States: Tracking User Behavior
 
@@ -40,7 +44,7 @@ Example: Show me the distribution of points scored.
 * Create custom metrics for numeric parameter values, like totals and averages. Example: For a purchase event, track and average revenue and the amount of currency bought per user.
 
 
-        Leanplum.track("Kills");
+        Leanplum.track("Eats");
         Leanplum.track("Likes", { "postId": post.Id });
 
 
@@ -74,8 +78,6 @@ Once you have your .p12 files, upload them to Leanplum.
                     "callback": "app.onNotificationReceived"
                 });
             });
-                                  
-            
         });
      
         app.onNotificationReceived(e){

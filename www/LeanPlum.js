@@ -2,19 +2,19 @@ var exec = require('cordova/exec');
 var channel = require('cordova/channel');
 
 function Leanplum(){
-	var me = this;
+	this.debug = false;
 }
 
+Leanplum.prototype.enableDebugging = function(){
+	this.debug = true;
+};
+
 Leanplum.prototype.start = function(successCallback, errorCallback, userId){
-		exec(successCallback,errorCallback, "Leanplum", "start", [userId]);
+		exec(successCallback,errorCallback, "Leanplum", "start", [this.debug, userId]);
 };
 
 Leanplum.prototype.start = function(successCallback, errorCallback){
-		exec(successCallback, errorCallback, "Leanplum", "start");
-};
-
-Leanplum.prototype.define = function(name, value, successCallback, errorCallback){
-    exec(successCallback, errorCallback, "Leanplum", "define", [name, value]);
+		exec(successCallback, errorCallback, "Leanplum", "start", [this.debug]);
 };
 
 Leanplum.prototype.track = function(name, successCallback, errorCallback){

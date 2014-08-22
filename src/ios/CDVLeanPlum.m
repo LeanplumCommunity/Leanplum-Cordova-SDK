@@ -7,31 +7,16 @@
 @synthesize callbackId;
 @synthesize notificationMessage;
 
-- (void) define:(CDVInvokedUrlCommand*)command
-{
-    CDVPluginResult* pluginResult = nil;
-    NSString* name = [command.arguments objectAtIndex:0];
-    id value = [command.arguments objectAtIndex:1];
-
-    if([value isKindOfClass:[NSString class]]){
-        [LPVar define:name withString:value];
-    }
-
-    pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
-
-    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
-}
-
 - (void)start:(CDVInvokedUrlCommand*)command
 {
     [self.commandDelegate runInBackground:^{
 
         __block CDVPluginResult* pluginResult = nil;
 
-        [self setup];
+        [self setup:[command.arguments objectAtIndex:0]];
 
-        if ([command.arguments count] > 0){
-            [Leanplum startWithUserId:[command.arguments objectAtIndex:0] responseHandler:^(BOOL success) {
+        if ([command.arguments count] > 1){
+            [Leanplum startWithUserId:[command.arguments objectAtIndex:1] responseHandler:^(BOOL success) {
                 
                 dispatch_async(dispatch_get_main_queue(), ^{
                     NSLog(@"Leanplum started %d", success);
@@ -55,17 +40,18 @@
     }];
 }
 
-- (void) setup
+- (void)setup:(BOOL)debuggingEnabled
 {
     NSString *appId = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"APP_ID"];
-#ifdef DEBUG
-    NSString *devKey = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"DEVELOPMENT_KEY"];
-    LEANPLUM_USE_ADVERTISING_ID;
-    [Leanplum setAppId:appId withDevelopmentKey:devKey];
-#else
-    NSString *prodKey = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"PRODUCTION_KEY"];
-    [Leanplum setAppId:appId withProductionKey:prodKey];
-#endif
+    if (debuggingEnabled){
+        NSString *devKey = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"DEVELOPMENT_KEY"];
+        LEANPLUM_USE_ADVERTISING_ID;
+        [Leanplum setAppId:appId withDevelopmentKey:devKey];
+    }
+    else{
+        NSString *prodKey = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"PRODUCTION_KEY"];
+        [Leanplum setAppId:appId withProductionKey:prodKey];
+    }
     // Syncs all the files between your main bundle and Leanplum.
     // This allows you to swap out and A/B test any resource file
     // in your project in realtime.

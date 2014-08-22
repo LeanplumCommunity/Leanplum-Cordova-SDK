@@ -9,7 +9,6 @@
 
 - (void) start:(CDVInvokedUrlCommand*)command;
 - (void) track:(CDVInvokedUrlCommand*)command;
-- (void) define:(CDVInvokedUrlCommand*)command;
 
 - (void)registerPush:(CDVInvokedUrlCommand*)command;
 - (void)unregisterPush:(CDVInvokedUrlCommand*)command;
