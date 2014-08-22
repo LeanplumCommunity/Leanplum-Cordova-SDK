@@ -65,28 +65,28 @@ Once you have your .p12 files, upload them to Leanplum.
 6. Configure your app to use push notifications.
 
 
-    (function (global) {
+        (function (global) {
 
-        var app = global;
-     
-        document.addEventListener('deviceready', function () {
-            Leanplum.start(function(){
-                Leanplum.registerPush({
-                    "badge": "true",
-                    "sound": "true",
-                    "alert": "true",
-                    "callback": "app.onNotificationReceived"
+            var app = global;
+         
+            document.addEventListener('deviceready', function () {
+                Leanplum.start(function(){
+                    Leanplum.registerPush({
+                        "badge": "true",
+                        "sound": "true",
+                        "alert": "true",
+                        "callback": "app.onNotificationReceived"
+                    });
                 });
+                                      
+                
             });
-                                  
-            
-        });
-     
-        app.onNotificationReceived(e){
-              alert(JSON.stringify(e));
-        }
-     
-     })(window);
+         
+            app.onNotificationReceived(e){
+                  alert(JSON.stringify(e));
+            }
+         
+         })(window);
 
 
 
