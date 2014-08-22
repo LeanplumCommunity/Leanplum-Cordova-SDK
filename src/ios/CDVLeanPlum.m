@@ -32,14 +32,24 @@
 
         if ([command.arguments count] > 0){
             [Leanplum startWithUserId:[command.arguments objectAtIndex:0] responseHandler:^(BOOL success) {
-                pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
-                [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+                
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    NSLog(@"Leanplum started %d", success);
+                    
+                    pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
+                    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+                });
+                
             }];
         }else{
             // Starts a new session and updates the app from Leanplum.
             [Leanplum startWithResponseHandler:^(BOOL success) {
-                pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
-                [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    NSLog(@"Leanplum started %d", success);
+                
+                    pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
+                    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+                });
             }];
         }
     }];
@@ -48,7 +58,6 @@
 - (void) setup
 {
     NSString *appId = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"APP_ID"];
-
 #ifdef DEBUG
     NSString *devKey = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"DEVELOPMENT_KEY"];
     LEANPLUM_USE_ADVERTISING_ID;
@@ -57,7 +66,6 @@
     NSString *prodKey = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"PRODUCTION_KEY"];
     [Leanplum setAppId:appId withProductionKey:prodKey];
 #endif
-
     // Syncs all the files between your main bundle and Leanplum.
     // This allows you to swap out and A/B test any resource file
     // in your project in realtime.
@@ -65,6 +73,7 @@
 
     // Tracks all screens in your app as states in Leanplum.
     [Leanplum trackAllAppScreens];
+    
 }
 
 
@@ -97,24 +106,21 @@
     id soundArg = [options objectForKey:@"sound"];
     id alertArg = [options objectForKey:@"alert"];
 
-    if ([badgeArg isKindOfClass:[NSString class]])
-    {
+    if ([badgeArg isKindOfClass:[NSString class]]){
         if ([badgeArg isEqualToString:@"true"])
             notificationTypes |= UIRemoteNotificationTypeBadge;
     }
     else if ([badgeArg boolValue])
         notificationTypes |= UIRemoteNotificationTypeBadge;
 
-    if ([soundArg isKindOfClass:[NSString class]])
-    {
+    if ([soundArg isKindOfClass:[NSString class]]){
         if ([soundArg isEqualToString:@"true"])
             notificationTypes |= UIRemoteNotificationTypeSound;
     }
     else if ([soundArg boolValue])
         notificationTypes |= UIRemoteNotificationTypeSound;
 
-    if ([alertArg isKindOfClass:[NSString class]])
-    {
+    if ([alertArg isKindOfClass:[NSString class]]){
         if ([alertArg isEqualToString:@"true"])
             notificationTypes |= UIRemoteNotificationTypeAlert;
     }

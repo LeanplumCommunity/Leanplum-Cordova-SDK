@@ -29,7 +29,7 @@
 
     if (appState == UIApplicationStateActive) {
 
-        CDVLeanPlum *leanplumHandler = [self getCommandInstance:@"CDVLeanPlum"];
+        CDVLeanPlum *leanplumHandler = [self getCommandInstance:@"LeanPlum"];
 
         leanplumHandler.notificationMessage = userInfo;
         [leanplumHandler notificationReceived];

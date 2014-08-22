@@ -5,7 +5,7 @@ function Leanplum(){
 	var me = this;
 }
 
-Leanplum.prototype.start = function(userId, successCallback, errorCallback){
+Leanplum.prototype.start = function(successCallback, errorCallback, userId){
 		exec(successCallback,errorCallback, "Leanplum", "start", [userId]);
 };
 
@@ -25,8 +25,8 @@ Leanplum.prototype.track = function(name, data, successCallback, errorCallback){
 		exec(successCallback, errorCallback, "Leanplum", "track", [name, data]);
 };
 
-Leanplum.prototype.registerPush = function(successCallback, errorCallback, options){
-	exec(successCallback, errorCallback, "Leanplum", "registerPush", [options]);
+Leanplum.prototype.registerPush = function(options){
+	exec(function(success){ }, function(error){}, "Leanplum", "registerPush", [options]);
 }
 
 if (typeof module != 'undefined' && module.exports) {
