@@ -65,8 +65,6 @@ Once you have your .p12 files, upload them to Leanplum.
 6. Configure your app to use push notifications.
 
 
-        (function (global) {
-
             var app = global;
          
             document.addEventListener('deviceready', function () {
@@ -86,8 +84,6 @@ Once you have your .p12 files, upload them to Leanplum.
                   alert(JSON.stringify(e));
             }
          
-         })(window);
-
 
 
 ## Supported Platforms
