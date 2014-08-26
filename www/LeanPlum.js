@@ -27,7 +27,11 @@ Leanplum.prototype.track = function(successCallback, errorCallback, name, data){
 
 Leanplum.prototype.registerPush = function(options){
 	exec(function(success){ }, function(error){}, "Leanplum", "registerPush", [options]);
-}
+};
+
+Leanplum.prototype.unregisterPush = function(){
+	exec(function(success){ }, function(error){}, "Leanplum", "unregisterPush", []);
+};
 
 if (typeof module != 'undefined' && module.exports) {
   module.exports = new Leanplum();
