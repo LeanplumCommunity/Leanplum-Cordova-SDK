@@ -10,19 +10,19 @@ Leanplum.prototype.enableDebugging = function(){
 };
 
 Leanplum.prototype.start = function(successCallback, errorCallback, userId){
-		exec(successCallback,errorCallback, "Leanplum", "start", [this.debug, userId]);
+	if (userId === undefined) {
+		exec(successCallback,errorCallback, "Leanplum", "start", [this.debug]);
+	} else {
+		exec(successCallback,errorCallback, "Leanplum", "start", [this.debug, userId]);        
+	}
 };
 
-Leanplum.prototype.start = function(successCallback, errorCallback){
-		exec(successCallback, errorCallback, "Leanplum", "start", [this.debug]);
-};
-
-Leanplum.prototype.track = function(name, successCallback, errorCallback){
+Leanplum.prototype.track = function(successCallback, errorCallback, name, data){
+	if (data === undefined) {
 		exec(successCallback, errorCallback, "Leanplum", "track", [name]);
-};
-
-Leanplum.prototype.track = function(name, data, successCallback, errorCallback){
+	} else {
 		exec(successCallback, errorCallback, "Leanplum", "track", [name, data]);
+	}
 };
 
 Leanplum.prototype.registerPush = function(options){
