@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <plugin id="com.telerik.leanplum" version="1.0.1" xmlns="http://apache.org/cordova/ns/plugins/1.0" xmlns:android="http://schemas.android.com/apk/res/android">
 	<name>Leanplum</name>
-	<js-module name="Leanplum" src="www/Leanplum.js">
+	<js-module name="Leanplum" src="www/LeanPlum.js">
 		<clobbers target="Leanplum" />
 	</js-module>
 
