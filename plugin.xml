@@ -44,4 +44,47 @@
 
 	</platform>
 
+	<platform name="android">
+		<source-file src="src/android/res/values/leanplum.xml" target-dir="res/values" />
+
+		<config-file target="res/values/leanplum.xml" parent="/*">
+			<string name="app_id">$APP_ID</string>
+			<string name="development_key">$DEVELOPMENT_KEY</string>
+			<string name="production_key">$PRODUCTION_KEY</string>
+		</config-file>
+
+		<config-file target="res/xml/config.xml" parent="/*">
+			<feature name="Leanplum">
+				<param name="android-package" value="com.telerik.leanplum.LeanplumPlugin"/>
+			</feature>
+		</config-file>
+
+		<config-file target="AndroidManifest.xml" parent="/manifest">
+			<uses-permission android:name="android.permission.INTERNET" />
+			<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+			<uses-permission android:name="android.permission.GET_ACCOUNTS" />
+			<uses-permission android:name="android.permission.WAKE_LOCK" />
+			<uses-permission android:name="android.permission.VIBRATE"/>
+			<uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+			<permission android:name="$PACKAGE_NAME.permission.C2D_MESSAGE" android:protectionLevel="signature" />
+			<uses-permission android:name="$PACKAGE_NAME.permission.C2D_MESSAGE" />
+
+		</config-file>
+
+		<config-file target="AndroidManifest.xml" parent="/manifest/application">
+			<receiver android:name="com.leanplum.GcmBroadcastReceiver" android:permission="com.google.android.c2dm.permission.SEND" >
+				<intent-filter>
+					<action android:name="com.google.android.c2dm.intent.RECEIVE" />
+					<action android:name="com.google.android.c2dm.intent.REGISTRATION" />
+					<category android:name="$PACKAGE_NAME.gcm" />
+				</intent-filter>
+			</receiver>
+			<service android:name="com.leanplum.LeanplumPushService" />
+		</config-file>
+
+		<source-file src="lib/android/leanplum.jar" target-dir="libs"/>
+		<source-file src="src/android/LeanplumPlugin.java"  target-dir="src/com/telerik/leanplum" />
+
+	</platform>
+
 </plugin>

@@ -17,21 +17,21 @@
 
         if ([command.arguments count] > 1){
             [Leanplum startWithUserId:[command.arguments objectAtIndex:1] responseHandler:^(BOOL success) {
-                
+
                 dispatch_async(dispatch_get_main_queue(), ^{
                     NSLog(@"Leanplum started %d", success);
-                    
+
                     pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
                     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
                 });
-                
+
             }];
         }else{
             // Starts a new session and updates the app from Leanplum.
             [Leanplum startWithResponseHandler:^(BOOL success) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     NSLog(@"Leanplum started %d", success);
-                
+
                     pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
                     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
                 });
@@ -59,7 +59,7 @@
 
     // Tracks all screens in your app as states in Leanplum.
     [Leanplum trackAllAppScreens];
-    
+
 }
 
 
@@ -73,7 +73,6 @@
 
     }
     else if([command.arguments count] > 1 && [[command.arguments objectAtIndex:1] isKindOfClass:[NSDictionary class]]){
-
         [Leanplum track:[command.arguments objectAtIndex:0] withParameters:[command.arguments objectAtIndex:1]];
     }
 

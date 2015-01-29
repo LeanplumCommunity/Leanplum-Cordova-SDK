@@ -10,25 +10,29 @@ Leanplum.prototype.enableDebugging = function(){
 };
 
 Leanplum.prototype.start = function(successCallback, errorCallback, userId){
+	if (userId === undefined) {
+		exec(successCallback,errorCallback, "Leanplum", "start", [this.debug]);
+	} else {
 		exec(successCallback,errorCallback, "Leanplum", "start", [this.debug, userId]);
+	}
 };
 
-Leanplum.prototype.start = function(successCallback, errorCallback){
-		exec(successCallback, errorCallback, "Leanplum", "start", [this.debug]);
-};
-
-Leanplum.prototype.track = function(name, successCallback, errorCallback){
+Leanplum.prototype.track = function(successCallback, errorCallback, name, data){
+	if (data === undefined) {
 		exec(successCallback, errorCallback, "Leanplum", "track", [name]);
-};
-
-Leanplum.prototype.track = function(name, data, successCallback, errorCallback){
+	} else {
 		exec(successCallback, errorCallback, "Leanplum", "track", [name, data]);
+	}
 };
 
 Leanplum.prototype.registerPush = function(options){
 	exec(function(success){ }, function(error){}, "Leanplum", "registerPush", [options]);
-}
+};
+
+Leanplum.prototype.unregisterPush = function(){
+	exec(function(success){ }, function(error){}, "Leanplum", "unregisterPush", []);
+};
 
 if (typeof module != 'undefined' && module.exports) {
-  module.exports = new Leanplum();
+	module.exports = new Leanplum();
 };
