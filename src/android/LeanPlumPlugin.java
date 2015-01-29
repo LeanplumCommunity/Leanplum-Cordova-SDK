@@ -118,7 +118,8 @@ public class LeanplumPlugin extends CordovaPlugin {
   }
 
   public void unregister(CallbackContext callbackContext, JSONArray args) throws JSONException{
-    LeanplumPushService.unregister();
+    // Bug: Leanplum throws exception.
+    //LeanplumPushService.unregister();
     callbackContext.success();
   }
 
