@@ -82,7 +82,7 @@
 			<service android:name="com.leanplum.LeanplumPushService" />
 		</config-file>
 
-		<source-file src="lib/android/leanplum.jar" target-dir="libs"/>
+		<source-file src="lib/android/Leanplum.jar" target-dir="libs"/>
 		<source-file src="lib/android/gcm.jar" target-dir="libs/" />
 		<source-file src="src/android/LeanplumPlugin.java"  target-dir="src/com/telerik/leanplum" />
 		<source-file src="src/android/CordovaGCMBroadcastReceiver.java"  target-dir="src/com/telerik/leanplum" />
