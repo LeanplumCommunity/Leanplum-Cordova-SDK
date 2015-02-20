@@ -23,7 +23,7 @@ Next, start LeanPlum in the following way:
 
     Leanplum.start(function(){
         // Do Your Thing.
-    }
+    })
 
 Based on debugging enabled. It will use either the production or development key for a given app ID.
 
