@@ -13,7 +13,7 @@ Leanplum.prototype.start = function(successCallback, errorCallback, userId){
 	if (userId === undefined) {
 		exec(successCallback,errorCallback, "Leanplum", "start", [this.debug]);
 	} else {
-		exec(successCallback,errorCallback, "Leanplum", "start", [this.debug, userId]);
+		exec(successCallback,errorCallback, "Leanplum", "start", [this.debug, userId]);        
 	}
 };
 

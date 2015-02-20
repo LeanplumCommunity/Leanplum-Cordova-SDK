@@ -74,6 +74,7 @@
     }
     else if([command.arguments count] > 1 && [[command.arguments objectAtIndex:1] isKindOfClass:[NSDictionary class]]){
         [Leanplum track:[command.arguments objectAtIndex:0] withParameters:[command.arguments objectAtIndex:1]];
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
     }
 
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
