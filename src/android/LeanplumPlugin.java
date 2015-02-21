@@ -53,15 +53,6 @@ public class LeanplumPlugin extends CordovaPlugin {
     }
   }
 
-
-  /**
-  * Gets the application context from cordova's main activity.
-  * @return the application context
-  */
-  private Context getApplicationContext() {
-    return this.cordova.getActivity().getApplicationContext();
-  }
-
   @Override
   public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
     try {
@@ -88,10 +79,10 @@ public class LeanplumPlugin extends CordovaPlugin {
 
     LeanplumPushService.setGcmSenderId(LeanplumPushService.LEANPLUM_SENDER_ID);
 
-    if (args.length() > 1){
-      Leanplum.start(getApplicationContext(), args.getString(1));
-    }else{
-      Leanplum.start(getApplicationContext());
+    if (args.length() > 1) {
+      Leanplum.start(webView.getContext(), args.getString(1));
+    } else {
+      Leanplum.start(webView.getContext());
     }
 
     String message = String.format("Leanplum started %b", true);
@@ -112,7 +103,7 @@ public class LeanplumPlugin extends CordovaPlugin {
       LeanplumPushService.setGcmSenderId(LeanplumPushService.LEANPLUM_SENDER_ID);
     }
 
-    Leanplum.start(getApplicationContext());
+    Leanplum.start(webView.getContext());
 
     callbackContext.success();
   }
