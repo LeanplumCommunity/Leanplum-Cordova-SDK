@@ -1,6 +1,23 @@
 <?xml version='1.0' encoding='utf-8'?>
 <plugin id="com.telerik.leanplum" version="1.1.0" xmlns="http://apache.org/cordova/ns/plugins/1.0" xmlns:android="http://schemas.android.com/apk/res/android">
+
 	<name>Leanplum</name>
+
+	<description>
+		Leanplum enables mobile teams to quickly go from insight to action using
+		the lean cycle of releasing, analyzing and optimizing content and messaging.
+	</description>
+
+	<author>Leanplum</author>
+
+	<license>MIT</license>
+
+	<keywords>Tracking, Behavior, Insight, Logging, Messaging, Push, Push Notifications</keywords>
+
+	<repo>https://github.com/Leanplum/Leanplum-Cordova-SDK.git</repo>
+
+	<issue>https://github.com/Leanplum/Leanplum-Cordova-SDK/issues</issue>
+
 	<js-module name="Leanplum" src="www/LeanPlum.js">
 		<clobbers target="Leanplum" />
 	</js-module>

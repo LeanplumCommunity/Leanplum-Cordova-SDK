@@ -88,4 +88,4 @@ Once you have your .p12 files, upload them to Leanplum.
 
 ## Supported Platforms
 
-iOS
+iOS, Android
