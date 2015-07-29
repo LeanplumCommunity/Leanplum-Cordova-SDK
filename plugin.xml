@@ -37,9 +37,7 @@
     	<framework src="CFNetwork.framework"/>
     	<framework src="SystemConfiguration.framework"/>
     	<framework src="AdSupport.framework"/>
-
-		<source-file framework="true" src="lib/ios/LeanPlum.framework/libLeanPlum.a"/>
-		<header-file src="lib/ios/LeanPlum.framework/Headers/LeanPlum.h"/>
+    	<framework src="lib/ios/LeanPlum.framework" custom="true" />
 
 		<header-file src="src/ios/CDVLeanPlum.h" />
 		<source-file src="src/ios/CDVLeanPlum.m" />
