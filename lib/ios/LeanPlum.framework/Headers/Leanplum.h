@@ -1,9 +1,12 @@
 //
 //  Leanplum.h
-//  Leanplum iOS SDK Version 1.2.14
+//  Leanplum iOS SDK Version 1.3.7
 //
-//  Copyright (c) 2014 Leanplum. All rights reserved.
+//  Copyright (c) 2015 Leanplum. All rights reserved.
 //
+
+#import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 
 #define _LP_DEFINE_HELPER(name,val,type) LPVar* name; \
 static void __attribute__((constructor)) initialize_##name() { \
@@ -81,6 +84,10 @@ name = [LPVar define:[@#name stringByReplacingOccurrencesOfString:@"_" withStrin
     _Pragma("clang diagnostic pop")
 
 @class LPActionContext;
+@class SKPaymentTransaction;
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
+@class NSExtensionContext;
+#endif
 
 /**
  * @defgroup _ Callback Blocks
@@ -89,11 +96,9 @@ name = [LPVar define:[@#name stringByReplacingOccurrencesOfString:@"_" withStrin
  */
 typedef void (^LeanplumStartBlock)(BOOL success);
 typedef void (^LeanplumVariablesChangedBlock)();
+typedef void (^LeanplumInterfaceChangedBlock)();
 // Returns whether the action was handled.
 typedef BOOL (^LeanplumActionBlock)(LPActionContext* context);
-typedef void (^LeanplumRegisterDeviceResponseBlock)(NSString *email);
-typedef void (^LeanplumRegisterDeviceBlock)(LeanplumRegisterDeviceResponseBlock response);
-typedef void (^LeanplumRegisterDeviceFinishedBlock)(BOOL success);
 typedef void (^LeanplumHandleNotificationBlock)();
 typedef void (^LeanplumShouldHandleNotificationBlock)(NSDictionary *userInfo, LeanplumHandleNotificationBlock response);
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000
@@ -102,17 +107,8 @@ typedef UIBackgroundFetchResult LeanplumUIBackgroundFetchResult;
 typedef int LeanplumUIBackgroundFetchResult;
 #endif
 typedef void (^LeanplumFetchCompletionBlock)(LeanplumUIBackgroundFetchResult result);
+typedef void (^LeanplumPushSetupBlock)();
 /**@}*/
-
-/**
- * The different registration modes when starting Leanplum in development modes.
- * @deprecated Register devices on the Dashboard instead.
- */
-typedef enum {
-    kLeanplumRegistrationModeOnlyWhenUnregistered = 1,
-    kLeanplumRegistrationModeAlways = 2,
-    kLeanplumRegistrationModeNever = 3,
-} LeanplumRegistrationMode;
 
 /**
  * Leanplum Action Kind Message types
@@ -151,15 +147,6 @@ typedef enum {
  */
 + (void)setCanDownloadContentMidSessionInProductionMode:(BOOL)value;
 
-// Development mode options:
-/**
- * @{
- * Whether to check for new SDK versions.
- * By default, Leanplum will check for updates to the Leanplum SDK in development mode
- * and notify you when your app starts if an update is available.
- */
-+ (void)setUpdateCheckingEnabledInDevelopmentMode:(BOOL)enabled;
-
 /**
  * Modifies the file hashing setting in development mode.
  * By default, Leanplum will hash file variables to determine if they're modified and need
@@ -170,12 +157,14 @@ typedef enum {
 + (void)setFileHashingEnabledInDevelopmentMode:(BOOL)enabled;
 
 /**
- * Choose when to show the registration prompt.
- * Default: kLeanplumRegistrationModeOnlyWhenUnregistered.
- * @deprecated Register devices on the Dashboard instead.
+ * Sets whether to enable verbose logging in development mode. Default: NO.
  */
-+ (void)setRegistrationRequiredInDevelopmentMode:(LeanplumRegistrationMode)mode;
-/**@}*/
++ (void)setVerboseLoggingInDevelopmentMode:(BOOL)enabled;
+
+/**
+ * Sets a custom event name for in-app purchase tracking. Default: Purchase.
+ */
++ (void)setInAppPurchaseEventName:(NSString *)event;
 
 /**
  * @{
@@ -195,6 +184,29 @@ typedef enum {
 + (void)setAppId:(NSString *)appId withProductionKey:(NSString *)accessKey;
 /**@}*/
 
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
+/**
+ * Apps running as extensions need to call this before start.
+ * @param context The current extensionContext. You can get this from UIViewController.
+ */
++ (void)setExtensionContext:(NSExtensionContext *)context;
+#endif
+
+/**
+ * @{
+ * Call this before start to allow your interfaces to change on the fly.
+ * Needed in development mode to enable the interface editor, as well as in production to allow
+ * changes to be applied.
+ */
++ (void)allowInterfaceEditing;
+
+/**
+ * Check if interface editing is enabled.
+ */
++ (BOOL)interfaceEditingEnabled;
+
+/**@}*/
+
 /**
  * Sets a custom device ID. For example, you may want to pass the advertising ID to do attribution.
  * By default, the device ID is the identifier for vendor.
@@ -205,22 +217,51 @@ typedef enum {
  * @{
  * Syncs resources between Leanplum and the current app.
  * You should only call this once, and before {@link start}.
+ * Deprecated. Use {@link syncResourcesAsync:} instead.
  */
-+ (void)syncResources;
++ (void)syncResources __attribute__((deprecated));
 
 /**
  * Syncs resources between Leanplum and the current app.
  * You should only call this once, and before {@link start}.
- * @param patternsToIncludeOrNil Limit paths
- *     to only those matching at least one pattern in this list.
- *     Supply null to indicate no inclusion patterns.
- *     Paths start with the folder name within the res folder,
- *     e.g. "layout/main.xml".
- * @param patternsToExcludeOrNil Exclude paths
- *     matching at least one of these patterns.
- *     Supply null to indicate no exclusion patterns.
+ * @param async Whether the call should be asynchronous. Resource syncing can take 1-2 seconds to
+ *     index the app's resources. If async is set, resources may not be available immediately
+ *     when the app starts.
  */
-+ (void)syncResourcePaths:(NSArray *)patternsToIncludeOrNil excluding:(NSArray *)patternsToExcludeOrNil;
++ (void)syncResourcesAsync:(BOOL)async;
+
+/**
+ * Syncs resources between Leanplum and the current app.
+ * You should only call this once, and before {@link start}.
+ * Deprecated. Use {@link syncResourcePaths:excluding:async} instead.
+ * @param async Whether the call should be asynchronous. Resource syncing can take 1-2 seconds to
+ *     index the app's resources. If async is set, resources may not be available immediately
+ *     when the app starts.
+ * @param patternsToIncludeOrNil Limit paths to only those matching at least one pattern in this
+ *     list. Supply nil to indicate no inclusion patterns. Paths are relative to the app's bundle.
+ * @param patternsToExcludeOrNil Exclude paths matching at least one of these patterns.
+ *     Supply nil to indicate no exclusion patterns.
+ */
++ (void)syncResourcePaths:(NSArray *)patternsToIncludeOrNil
+                excluding:(NSArray *)patternsToExcludeOrNil __attribute__((deprecated));
+
+/**
+ * Syncs resources between Leanplum and the current app.
+ * You should only call this once, and before {@link start}.
+ * @param async Whether the call should be asynchronous. Resource syncing can take 1-2 seconds to
+ *     index the app's resources. If async is set, resources may not be available immediately
+ *     when the app starts.
+ * @param patternsToIncludeOrNil Limit paths to only those matching at least one pattern in this
+ *     list. Supply nil to indicate no inclusion patterns. Paths are relative to the app's bundle.
+ * @param patternsToExcludeOrNil Exclude paths matching at least one of these patterns.
+ *     Supply nil to indicate no exclusion patterns.
+ * @param async Whether the call should be asynchronous. Resource syncing can take 1-2 seconds to
+ *     index the app's resources. If async is set, resources may not be available immediately
+ *     when the app starts.
+ */
++ (void)syncResourcePaths:(NSArray *)patternsToIncludeOrNil
+                excluding:(NSArray *)patternsToExcludeOrNil
+                    async:(BOOL)async;
 /**@}*/
 
 /**
@@ -236,7 +277,7 @@ typedef enum {
 + (void)startWithUserId:(NSString *)userId responseHandler:(LeanplumStartBlock)response;
 + (void)startWithUserId:(NSString *)userId userAttributes:(NSDictionary *)attributes;
 + (void)startWithUserId:(NSString *)userId userAttributes:(NSDictionary *)attributes
-        responseHandler:(LeanplumStartBlock)response;
+        responseHandler:(LeanplumStartBlock)startResponse;
 /**@}*/
 
 /**
@@ -265,6 +306,13 @@ typedef enum {
  * that can update in realtime.
  */
 + (void)onVariablesChanged:(LeanplumVariablesChangedBlock)block;
+
+/**
+ * Block to call when the interface receive new values from the server.
+ * This will be called on start, and also later on if the user is in an experiment
+ * that can update in realtime.
+ */
++ (void)onInterfaceChanged:(LeanplumInterfaceChangedBlock)block;
 
 /**
  * Block to call when no more file downloads are pending (either when
@@ -304,23 +352,26 @@ typedef enum {
 + (void)handleNotification:(NSDictionary *)userInfo
     fetchCompletionHandler:(LeanplumFetchCompletionBlock)completionHandler;
 
+/**
+ * Call this to handle custom actions for local notifications.
+ */
++ (void)handleActionWithIdentifier:(NSString *)identifier
+              forLocalNotification:(UILocalNotification *)notification
+                 completionHandler:(void (^)())completionHandler;
+
+/**
+ * Call this to handle custom actions for remote notifications.
+ */
++ (void)handleActionWithIdentifier:(NSString *)identifier
+             forRemoteNotification:(NSDictionary *)notification
+                 completionHandler:(void (^)())completionHandler;
+
 /*
  * Block to call that decides whether a notification should be displayed when it is
  * received while the app is running, and the notification is not muted.
  * Overrides the default behavior of showing an alert view with the notification message.
  */
 + (void)setShouldOpenNotificationHandler:(LeanplumShouldHandleNotificationBlock)block;
-
-/** 
- * Block to call when the device needs to be registered in development mode.
- * This block will get called instead of the prompt showing up.
- */
-+ (void)onRegisterDevice:(LeanplumRegisterDeviceBlock)block;
-
-/**
- * Block to call when the device has been registered in development mode.
- */
-+ (void)onRegisterDeviceDidFinish:(LeanplumRegisterDeviceFinishedBlock)block;
 
 /**
  * @{
@@ -330,10 +381,12 @@ typedef enum {
  */
 + (void)addStartResponseResponder:(id)responder withSelector:(SEL)selector;
 + (void)addVariablesChangedResponder:(id)responder withSelector:(SEL)selector;
++ (void)addInterfaceChangedResponder:(id)responder withSelector:(SEL)selector;
 + (void)addVariablesChangedAndNoDownloadsPendingResponder:(id)responder withSelector:(SEL)selector;
 + (void)addResponder:(id)responder withSelector:(SEL)selector forActionNamed:(NSString *)actionName;
 + (void)removeStartResponseResponder:(id)responder withSelector:(SEL)selector;
 + (void)removeVariablesChangedResponder:(id)responder withSelector:(SEL)selector;
++ (void)removeInterfaceChangedResponder:(id)responder withSelector:(SEL)selector;
 + (void)removeVariablesChangedAndNoDownloadsPendingResponder:(id)responder withSelector:(SEL)selector;
 + (void)removeResponder:(id)responder withSelector:(SEL)selector forActionNamed:(NSString *)actionName;
 /**@}*/
@@ -356,6 +409,13 @@ typedef enum {
  * Updates a user ID after session start with a dictionary of user attributes.
  */
 + (void)setUserId:(NSString *)userId withUserAttributes:(NSDictionary *)attributes;
+
+/**
+ * Sets the traffic source info for the current user.
+ * Keys in info must be one of: publisherId, publisherName, publisherSubPublisher,
+ * publisherSubSite, publisherSubCampaign, publisherSubAdGroup, publisherSubAd.
+ */
++ (void)setTrafficSourceInfo:(NSDictionary *)info;
 
 /**
  * @{
@@ -418,12 +478,42 @@ typedef enum {
  * 1 state at a time.
  */
 + (void)trackAllAppScreens;
+
+/**
+ * LPTrackScreenMode enum.
+ * LPTrackScreenModeDefault mans that states are the full view controller type name.
+ * LPTrackScreenModeStripViewController will cause the string "ViewController" to be stripped from
+ * the end of the state.
+ */
+typedef NS_ENUM(NSUInteger, LPTrackScreenMode) {
+    LPTrackScreenModeDefault = 0,
+    LPTrackScreenModeStripViewController
+};
+
+/**
+ * Automatically tracks all of the screens in the app as states.
+ * You should not use this in conjunction with advanceTo as the user can only be in
+ * 1 state at a time.
+ * @param trackScreenMode Choose mode for display. Default is the view controller type name.
+ */
++ (void)trackAllAppScreensWithMode:(LPTrackScreenMode)trackScreenMode;
+
+/**
+ * Automatically tracks InApp purchase and does server side receipt validation.
+ */
++ (void)trackInAppPurchases;
+
+/**
+ * Manually tracks InApp purchase and does server side receipt validation.
+ */
++ (void)trackInAppPurchase:(SKPaymentTransaction *)transaction;
 /**@}*/
 
 /**
  * @{
  * Logs a particular event in your application. The string can be
  * any value of your choosing, and will show up in the dashboard.
+ * To track a purchase, use LP_PURCHASE_EVENT.
  */
 + (void)track:(NSString *)event;
 + (void)track:(NSString *)event withValue:(double)value;
@@ -473,6 +563,42 @@ typedef enum {
  */
 + (void)enableTestMode;
 
+/**
+ * Used to enable or disable test mode. Test mode prevents Leanplum from
+ * communicating with the server. This is useful for unit tests.
+ */
++ (void)setTestModeEnabled:(BOOL)isTestModeEnabled;
+
+/**
+ * Customize push setup. If this API should be called before [Leanplum start]. If this API is not
+ * used the default push setup from the docs will be used for "Push Ask to Ask" and 
+ * "Register For Push".
+ */
++ (void)setPushSetup:(LeanplumPushSetupBlock)block;
+
+/**
+ * Get the push setup block.
+ */
++ (LeanplumPushSetupBlock)pushSetupBlock;
+
+/**
+ * Returns YES if the app existed on the device more than a day previous to a version built with
+ * Leanplum was installed.
+ */
++ (BOOL)isPreLeanplumInstall;
+
+/**
+ * Returns the deviceId in the current Leanplum session. This should only be called after
+ * [Leanplum start].
+ */
++ (NSString *)deviceId;
+
+/**
+ * Returns the userId in the current Leanplum session. This should only be called after
+ * [Leanplum start].
+ */
++ (NSString *)userId;
+
 @end
 
 @interface LeanplumCompatibility : NSObject
@@ -487,7 +613,7 @@ typedef enum {
 @class LPVar;
 
 /**
- * Recieves callbacks for {@link LPVar}
+ * Receives callbacks for {@link LPVar}
  */
 @protocol LPVarDelegate <NSObject>
 @optional
@@ -510,6 +636,7 @@ typedef enum {
  * @{
  * Defines a {@link LPVar}
  */
+
 + (LPVar *)define:(NSString *)name;
 + (LPVar *)define:(NSString *)name withInt:(int)defaultValue;
 + (LPVar *)define:(NSString *)name withFloat:(float)defaultValue;
@@ -571,7 +698,7 @@ typedef enum {
 - (void)onValueChanged:(LeanplumVariablesChangedBlock)block;
 
 /**
- * Sets the delegate of the variable in order to use 
+ * Sets the delegate of the variable in order to use
  * {@link LPVarDelegate::fileIsReady:} and {@link LPVarDelegate::valueDidChange:}
  */
 - (void)setDelegate:(id <LPVarDelegate>)delegate;

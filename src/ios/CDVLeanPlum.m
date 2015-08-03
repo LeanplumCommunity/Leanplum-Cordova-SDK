@@ -1,5 +1,5 @@
 #import "CDVLeanPlum.h"
-#import "LeanPlum.h"
+#import <LeanPlum/LeanPlum.h>
 
 @implementation CDVLeanPlum
 
