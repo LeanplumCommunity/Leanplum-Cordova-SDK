@@ -1,4 +1,4 @@
-Leanplum-Cordova-SDK
+# Leanplum-Cordova-SDK
 
 This plugin is community maintained and not under active support of Leanplum, Inc.
 
